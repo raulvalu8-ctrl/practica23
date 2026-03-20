@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC - Mujer</title>
+    <style>
+        /* Estilos modernos y limpios */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fce4ec; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .contenedor { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); width: 350px; text-align: center; border-top: 5px solid #ec407a; }
+        h2 { color: #880e4f; font-size: 1.5rem; margin-bottom: 25px; }
+        .campo { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; transition: 0.3s; }
+        input:focus { border-color: #ec407a; outline: none; box-shadow: 0 0 5px rgba(236, 64, 122, 0.3); }
+        button { width: 100%; padding: 12px; background-color: #ec407a; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        button:hover { background-color: #d81b60; transform: translateY(-2px); }
+        #resultado { margin-top: 25px; padding: 15px; border-radius: 8px; background-color: #f9f9f9; border: 1px solid #eee; min-height: 50px; }
+        .imc-valor { font-size: 1.8rem; font-weight: bold; color: #880e4f; margin-bottom: 5px; }
+        .imc-grado { font-size: 1.2rem; font-weight: bold; }
+        /* Colores para los grados */
+        .bajo { color: #0288d1; } /* Azul */
+        .normal { color: #388e3c; } /* Verde */
+        .sobrepeso { color: #fbc02d; } /* Amarillo/Naranja */
+        .obesidad { color: #d32f2f; } /* Rojo */
+        .error { color: #d32f2f; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h2>Calculadora IMC (Mujer)</h2>
+        
+        <div class="campo">
+            <label>Peso (kg):</label>
+            <input type="number" id="peso" placeholder="Ej: 60.5" step="0.1" min="1">
+        </div>
+        
+        <div class="campo">
+            <label>Estatura (metros):</label>
+            <input type="number" id="estatura" placeholder="Ej: 1.65" step="0.01" min="0.1">
+        </div>
+
+        <button onclick="calcularIMC()">Calcular IMC y Grado</button>
+
+        <div id="resultado">Introduce peso y estatura para comenzar.</div>
+    </div>
+
+    <script>
+        function calcularIMC() {
+            // 1. Captura y conversión de valores
+            const peso = parseFloat(document.getElementById('peso').value);
+            const estatura = parseFloat(document.getElementById('estatura').value);
+            const display = document.getElementById('resultado');
+
+            // 2. Validación de campos (No vacíos, números positivos, estatura razonable)
+            if (isNaN(peso) || isNaN(estatura) || peso <= 0 || estatura <= 0) {
+                display.innerHTML = "<span class='error'>Por favor, ingresa peso y estatura válidos.</span>";
+                return;
+            }
+            if (estatura > 3) {
+                display.innerHTML = "<span class='error'>La estatura debe ser en metros (ej: 1.65, no 165).</span>";
+                return;
+            }
+
+            // 3. Fórmula del IMC: Peso / (Estatura * Estatura)
+            const imc = peso / Math.pow(estatura, 2);
+            const imcFixed = imc.toFixed(1); // Redondear a un decimal
+
+            // 4. Lógica de clasificación (if-else)
+            let grado = "";
+            let claseCSS = "";
+
+            if (imc < 18.5) {
+                grado = "Bajo Peso";
+                claseCSS = "bajo";
+            } else if (imc >= 18.5 && imc <= 24.9) {
+                grado = "Peso Normal";
+                claseCSS = "normal";
+            } else if (imc >= 25.0 && imc <= 29.9) {
+                grado = "Sobrepeso";
+                claseCSS = "sobrepeso";
+            } else if (imc >= 30.0 && imc <= 34.9) {
+                grado = "Obesidad Grado I";
+                claseCSS = "obesidad";
+            } else if (imc >= 35.0 && imc <= 39.9) {
+                grado = "Obesidad Grado II";
+                claseCSS = "obesidad";
+            } else { // imc >= 40.0
+                grado = "Obesidad Grado III (Mórbida)";
+                claseCSS = "obesidad";
+            }
+
+            // 5. Impresión de resultados en el HTML
+            display.innerHTML = `
+                <div class="imc-valor">${imcFixed}</div>
+                <div class="imc-grado ${claseCSS}">Estado: ${grado}</div>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+                    (Valores de referencia generales para adultos)
+                </p>
+            `;
+            
+            // También mostramos un mensaje de alerta como en prácticas anteriores
+            window.alert("Cálculo finalizado.\nIMC: " + imcFixed + "\nEstado: " + grado);
+        }
+    </script>
+</body>
+</html>
